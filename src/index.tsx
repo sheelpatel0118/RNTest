@@ -1,22 +1,28 @@
-import { NativeModules, Platform } from 'react-native';
+import { useEffect, type PropsWithChildren } from 'react';
+import {
+  NativeModules,
+  Platform,
+  requireNativeComponent,
+  type ViewProps,
+} from 'react-native';
 
-const LINKING_ERROR =
-  `The package '@doorstepai/pathway-sdk' doesn't seem to be linked. Make sure: \n\n` +
-  Platform.select({ ios: "- You have run 'pod install'\n", default: '' }) +
-  '- You rebuilt the app after installing the package\n' +
-  '- You are not using Expo Go\n';
+const { DoorstepAIModule } = NativeModules;
+const DoorstepAIRootNative =
+  requireNativeComponent<ViewProps>('DoorstepAIRoot');
 
-const PathwaySdk = NativeModules.PathwaySdk
-  ? NativeModules.PathwaySdk
-  : new Proxy(
-      {},
-      {
-        get() {
-          throw new Error(LINKING_ERROR);
-        },
-      }
-    );
+export class DoorstepAI {
+  static start() {
+    DoorstepAIModule.start();
+  }
+  static stop() {
+    DoorstepAIModule.stop();
+  }
+}
 
-export function multiply(a: number, b: number): Promise<number> {
-  return PathwaySdk.multiply(a, b);
+export function DoorstepAIRoot(props: PropsWithChildren<{ token: string }>) {
+  const { token } = props;
+  useEffect(() => {
+    if (Platform.OS === 'android') DoorstepAIModule.setToken(token);
+  }, [token]);
+  return Platform.OS === 'ios' ? <DoorstepAIRootNative /> : null;
 }

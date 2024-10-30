@@ -1,0 +1,6 @@
+framework module DoorstepPathwayFramework {
+  umbrella header "DoorstepPathwayFramework.h"
+  export *
+
+  module * { export * }
+}

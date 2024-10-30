@@ -5,6 +5,9 @@ buildscript {
   repositories {
     google()
     mavenCentral()
+    flatDir {
+    dirs 'libs'
+  }
   }
 
   dependencies {
@@ -85,6 +88,9 @@ android {
 repositories {
   mavenCentral()
   google()
+  flatDir {
+    dirs 'libs'
+  }
 }
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
@@ -93,7 +99,9 @@ dependencies {
   // For < 0.71, this will be from the local maven repo
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
+  implementation 'com.google.android.gms:play-services-location:21.3.0'
   implementation "com.facebook.react:react-native:+"
   implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+  implementation fileTree(dir: "libs", include: ["*.aar"])
 }
 
